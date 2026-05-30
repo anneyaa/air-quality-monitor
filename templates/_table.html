@@ -1,0 +1,63 @@
+<div class="table-responsive rounded-3 shadow-sm border overflow-hidden">
+    <table class="table aq-table m-0">
+        <thead>
+            <tr>
+                <th>Время</th>
+                <th>Город</th>
+                <th class="text-center">
+                    PM10
+                    <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                          data-bs-title="Крупная пыль. Поражает органы дыхания. Норма: до 50 мкг/м³.">ⓘ</span>
+                </th>
+                <th class="text-center">
+                    PM2.5
+                    <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                          data-bs-title="Мелкие частицы. Проникают в кровь, влияют на сердце и легкие. Норма: до 25 мкг/м³.">ⓘ</span>
+                </th>
+                <th class="text-center">
+                    NO2
+                    <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                          data-bs-title="Диоксид азота. Продукт выхлопных газов. Вызывает воспаление легких. Норма: до 40 мкг/м³.">ⓘ</span>
+                </th>
+                <th class="text-center">
+                    CO
+                    <span class="info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                          data-bs-title="Угарный газ. Препятствует доставке кислорода к органам. Норма: до 400 мкг/м³ (в час).">ⓘ</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in measurements %}
+            <tr>
+                <td class="time-col">{{ m.date }}</td>
+                <td class="city-col">{{ m.city }}</td>
+                <td class="text-center {{ 'level-bad' if m.pm10 > 50 else 'level-warn' if m.pm10 > 30 else 'level-good' }}">
+                    <span class="value-text">{{ m.pm10 }}</span>
+                    <span class="unit-text">μg/m³</span>
+                </td>
+                <td class="text-center {{ 'level-bad' if m.pm25 > 25 else 'level-warn' if m.pm25 > 15 else 'level-good' }}">
+                    <span class="value-text">{{ m.pm25 }}</span>
+                    <span class="unit-text">μg/m³</span>
+                </td>
+                <td class="text-center {{ 'level-bad' if m.no2 > 40 else 'level-warn' if m.no2 > 20 else 'level-good' }}">
+                    <span class="value-text">{{ m.no2 }}</span>
+                    <span class="unit-text">μg/m³</span>
+                </td>
+                <td class="text-center {{ 'level-bad' if m.co > 400 else 'level-warn' if m.co > 200 else 'level-good' }}">
+                    <span class="value-text">{{ m.co }}</span>
+                    <span class="unit-text">μg/m³</span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center py-5 text-muted">
+                    <div class="py-4">
+                        <p class="mb-0 italic opacity-50">Данные отсутствуют.</p>
+                        <small>Введите название города в форме выше, чтобы получить информацию.</small>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

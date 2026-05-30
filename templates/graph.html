@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-card shadow-sm p-4 mb-5">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="m-0">Анализ динамики воздуха</h2>
+    </div>
+
+    <form action="/graph" method="get" class="row g-3 mb-5 p-4 bg-light rounded-3 border shadow-sm align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted">ГОРОД</label>
+            <input type="text" name="city" class="form-control" placeholder="Введите город" value="{{ city if data else '' }}" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-muted">НАЧАЛО ПЕРИОДА</label>
+            <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-muted">КОНЕЦ ПЕРИОДА</label>
+            <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted">ПАРАМЕТРЫ</label>
+            <div class="d-flex flex-wrap gap-3 mt-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="params" value="pm10" id="p1" {{ 'checked' if 'pm10' in selected_params else '' }}>
+                    <label class="form-check-label small" for="p1">PM10</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="params" value="pm25" id="p2" {{ 'checked' if 'pm25' in selected_params else '' }}>
+                    <label class="form-check-label small" for="p2">PM2.5</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="params" value="no2" id="p3" {{ 'checked' if 'no2' in selected_params else '' }}>
+                    <label class="form-check-label small" for="p3">NO2</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="params" value="co" id="p4" {{ 'checked' if 'co' in selected_params else '' }}>
+                    <label class="form-check-label small" for="p4">CO</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">Построить</button>
+        </div>
+    </form>
+
+    <div class="chart-section">
+        {% if not data %}
+            <div class="text-center py-5 rounded-4 border-2 border-dashed bg-white shadow-sm" style="border: 2px dashed #cbd5e1 !important;">
+                <h4 class="text-dark fw-bold">График пока пуст</h4>
+                <p class="text-muted mx-auto" style="max-width: 420px;">Введите название города и выберите период</p>
+            </div>
+        {% else %}
+            <div class="chart-container" style="position: relative; height:450px; width:100%">
+                <canvas id="airChart"></canvas>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if data %}
+    const labels = [{% for m in data %}"{{ m.date }}",{% endfor %}];
+    const datasets = [];
+
+    {% if 'pm10' in selected_params %}
+    datasets.push({
+        label: 'PM10',
+        data: [{% for m in data %}{{ m.pm10 }},{% endfor %}],
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        borderWidth: 3, tension: 0.3, fill: true
+    });
+    {% endif %}
+
+    {% if 'pm25' in selected_params %}
+    datasets.push({
+        label: 'PM2.5',
+        data: [{% for m in data %}{{ m.pm25 }},{% endfor %}],
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        borderWidth: 3, tension: 0.3, fill: true
+    });
+    {% endif %}
+
+    {% if 'no2' in selected_params %}
+    datasets.push({
+        label: 'NO2',
+        data: [{% for m in data %}{{ m.no2 }},{% endfor %}],
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        borderWidth: 3, tension: 0.3, fill: true
+    });
+    {% endif %}
+
+    {% if 'co' in selected_params %}
+    datasets.push({
+        label: 'CO',
+        data: [{% for m in data %}{{ m.co }},{% endfor %}],
+        borderColor: '#6366f1',
+        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+        borderWidth: 3, tension: 0.3, fill: true
+    });
+    {% endif %}
+
+    new Chart(document.getElementById('airChart'), {
+        type: 'line',
+        data: { labels: labels, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                x: { grid: { display: false }, ticks: { maxRotation: 45 } }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

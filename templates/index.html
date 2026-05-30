@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-card shadow-sm p-4 mb-5">
+    <h2 class="mb-4">Мониторинг качества воздуха</h2>
+
+    <form action="/refresh" method="get" class="row g-3 mb-5 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold">ГОРОД</label>
+            <input type="text" name="city" class="form-control" placeholder="Введите город" value="{{ city if measurements else '' }}" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label text-muted small fw-bold">ДАТА ОТ</label>
+            <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label text-muted small fw-bold">ДАТА ДО</label>
+            <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+        </div>
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">ОБНОВИТЬ</button>
+        </div>
+    </form>
+
+    {% if warnings %}
+    <div class="alert alert-warning border-0 shadow-sm mb-4">
+        <ul class="mb-0 small">
+            {% for msg in warnings %}<li>{{ msg }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="table-container">
+        {% include '_table.html' %}
+    </div>
+</div>
+{% endblock %}

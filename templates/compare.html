@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-card shadow-sm p-4 mb-5">
+    <h2 class="mb-4">Сравнение показателей городов</h2>
+
+    <form action="/compare" method="get" class="row g-3 mb-5 p-4 bg-light rounded-3 border align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted">ДАТА СРАВНЕНИЯ</label>
+            <input type="date" name="date" class="form-control" value="{{ target_date }}" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-muted">ГОРОД 1</label>
+            <input type="text" name="city1" class="form-control" value="{{ city1 }}" placeholder="Введите город">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-muted">ГОРОД 2</label>
+            <input type="text" name="city2" class="form-control" value="{{ city2 }}" placeholder="Введите город">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-muted">ГОРОД 3</label>
+            <input type="text" name="city3" class="form-control" value="{{ city3 }}" placeholder="Введите город">
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100 fw-bold">СРАВНИТЬ</button>
+        </div>
+    </form>
+
+    {% if results %}
+        <div class="row row-cols-1 row-cols-lg-3 g-3">
+            {% for city_name, measurements in results.items() %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header bg-dark text-white fw-bold text-center py-2 text-uppercase">
+                        {{ city_name }}
+                    </div>
+                    <div class="p-0 overflow-auto" style="max-height: 550px;">
+                        <table class="table table-sm m-0" style="font-size: 0.75rem;">
+                            <thead class="table-light text-center sticky-top">
+                                <tr>
+                                    <th style="width: 20%">ЧАС</th>
+                                    <th>PM10</th>
+                                    <th>PM2.5</th>
+                                    <th>NO2</th>
+                                    <th>CO</th>
+                                </tr>
+                            </thead>
+                           <tbody>
+                            {% for m in measurements %}
+                            <tr class="text-center">
+                                <td class="fw-bold text-muted">{{ m.date.split(' ')[1] }}</td>
+                                <td class="{{ 'level-bad' if m.pm10 > 50 else 'level-warn' if m.pm10 > 30 else 'level-good' }}">{{ m.pm10 }}</td>
+                                <td class="{{ 'level-bad' if m.pm25 > 25 else 'level-warn' if m.pm25 > 15 else 'level-good' }}">{{ m.pm25 }}</td>
+                                <td class="{{ 'level-bad' if m.no2 > 40 else 'level-warn' if m.no2 > 20 else 'level-good' }}">{{ m.no2 }}</td>
+                                <td class="{{ 'level-bad' if m.co > 400 else 'level-warn' if m.co > 200 else 'level-good' }}">{{ m.co }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5 rounded-3 border border-2 border-dashed bg-white">
+            <h5 class="text-muted">Готовы к сравнению?</h5>
+            <p class="small text-secondary">Введите названия городов и выберите дату.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

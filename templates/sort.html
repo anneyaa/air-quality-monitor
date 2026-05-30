@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-card shadow-sm p-4 mb-5">
+    <h2 class="mb-4 text-uppercase fw-bold" style="letter-spacing: 1px;">Аналитическая выборка</h2>
+
+    <form action="/sort" method="get" class="p-4 bg-light rounded-4 border shadow-sm mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">1. ГОРОД</label>
+                <input type="text" name="city" class="form-control" value="{{ city }}" placeholder="Минск, Париж..." required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">ПЕРИОД ОТ</label>
+                <input type="date" name="start_date" class="form-control" value="{{ start_date }}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">ПЕРИОД ДО</label>
+                <input type="date" name="end_date" class="form-control" value="{{ end_date }}" required>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">2. ФИЛЬТР ПО</label>
+                <select name="f_type" class="form-select">
+                    <option value="pm10" {% if f_type == 'pm10' %}selected{% endif %}>PM10</option>
+                    <option value="pm25" {% if f_type == 'pm25' %}selected{% endif %}>PM2.5</option>
+                    <option value="no2" {% if f_type == 'no2' %}selected{% endif %}>NO2</option>
+                    <option value="co" {% if f_type == 'co' %}selected{% endif %}>CO</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold">МИН</label>
+                <input type="number" step="0.1" name="f_min" class="form-control" value="{{ f_min }}" placeholder="0">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold">МАКС</label>
+                <input type="number" step="0.1" name="f_max" class="form-control" value="{{ f_max }}" placeholder="100">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">3. СОРТИРОВАТЬ ПО</label>
+                <select name="s_by" class="form-select">
+                    <option value="date" {% if s_by == 'date' %}selected{% endif %}>Времени</option>
+                    <option value="pm10" {% if s_by == 'pm10' %}selected{% endif %}>PM10</option>
+                    <option value="pm25" {% if s_by == 'pm25' %}selected{% endif %}>PM2.5</option>
+                    <option value="no2" {% if s_by == 'no2' %}selected{% endif %}>NO2</option>
+                    <option value="co" {% if s_by == 'co' %}selected{% endif %}>CO</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold">ПОРЯДОК</label>
+                <select name="s_order" class="form-select">
+                    <option value="desc" {% if s_order == 'desc' %}selected{% endif %}>Убывание</option>
+                    <option value="asc" {% if s_order == 'asc' %}selected{% endif %}>Возрастание</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-3">ВЫПОЛНИТЬ АНАЛИЗ</button>
+            </div>
+        </div>
+    </form>
+
+    {% if warnings %}
+        <div class="alert alert-warning border-0 shadow-sm">{{ warnings[0] }}</div>
+    {% endif %}
+
+    {% include '_table.html' %}
+</div>
+{% endblock %}
