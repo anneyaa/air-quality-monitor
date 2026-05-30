@@ -1,10 +1,10 @@
 from flask import Flask
-from models.air_quality import AirQualityMonitor
-from routes.main_routes import create_main_routes
-from routes.compare_routes import create_compare_routes
-from routes.sort_routes import create_sort_routes
-from routes.graph_routes import create_graph_routes
-from routes.auth_routes import create_auth_routes
+from AirMonitor_App.models.air_quality import AirQualityMonitor
+from AirMonitor_App.routes.main_routes import create_main_routes
+from AirMonitor_App.routes.compare_routes import create_compare_routes
+from AirMonitor_App.routes.sort_routes import create_sort_routes
+from AirMonitor_App.routes.graph_routes import create_graph_routes
+from AirMonitor_App.routes.auth_routes import create_auth_routes
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key-123'

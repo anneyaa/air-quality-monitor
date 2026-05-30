@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect
-from models.network import get_coordinates, get_air_data
+from AirMonitor_App.models.network import get_coordinates, get_air_data
 
 
 def create_graph_routes(monitor):

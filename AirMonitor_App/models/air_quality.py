@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime
-from constants import DATA_FILE
+from AirMonitor_App.constants import DATA_FILE
 
 class Measurement:
     def __init__(self, city, date, pm10, pm25, no2, co, **kwargs):
@@ -21,7 +21,7 @@ class AirQualityMonitor:
         self.data_file = DATA_FILE
 
     def fetch_from_api(self, city='Berlin', start_date=None, end_date=None):
-        from models.network import fetch_air_quality
+        from AirMonitor_App.models.network import fetch_air_quality
         raw_list, warnings = fetch_air_quality(city, start_date, end_date)
         if raw_list:
             self.data = [Measurement(**m) for m in raw_list]
@@ -30,7 +30,7 @@ class AirQualityMonitor:
         return False, warnings
 
     def fetch_for_comparison(self, cities, target_date):
-        from models.network import fetch_air_quality
+        from AirMonitor_App.models.network import fetch_air_quality
         results = {}
         for city in cities:
             if city and city.strip():
@@ -42,7 +42,7 @@ class AirQualityMonitor:
         return results
 
     def fetch_and_analyze(self, city, start_d, end_d, f_type, f_min, f_max, s_by, s_order):
-        from models.network import get_coordinates, get_air_data
+        from AirMonitor_App.models.network import get_coordinates, get_air_data
         coords = get_coordinates(city)
         if not coords: return [], ["Город не найден"]
 

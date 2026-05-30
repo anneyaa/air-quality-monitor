@@ -1,6 +1,6 @@
 import unittest
 import requests
-from models.network import get_coordinates, get_air_data, fetch_air_quality
+from AirMonitor_App.models.network import get_coordinates, get_air_data, fetch_air_quality
 
 
 class NetworkInterfaceTest(unittest.TestCase):
